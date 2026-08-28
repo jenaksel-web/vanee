@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     PALETA Y VARIABLES
+     Cambia estos valores si quieres otros colores.
+  ========================================================= */
+  :root{
+    --bg-deep:#20101A;
+    --bg-wine:#3A1B2C;
+    --bg-wine-2:#4A2338;
+    --blush:#E8A9BC;
+    --blush-soft:#F0C9D5;
+    --gold:#C9A46B;
+    --gold-soft:#E3CFA0;
+    --cream:#F7ECE4;
+    --cream-dim:#D9C6BE;
+    --mauve:#8C5A73;
+    --serif:'Cormorant Garamond', serif;
+    --sans:'Jost', sans-serif;
+    --ease:cubic-bezier(.65,0,.35,1);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--bg-deep);
+    color:var(--cream);
+    font-family:var(--sans);
+    overflow-x:hidden;
+  }
+
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% -10%, var(--bg-wine-2) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 110%, var(--bg-wine) 0%, transparent 55%),
+      var(--bg-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  #app{ width:100%; min-height:100vh; position:relative; }
+
+  .scene{
+    width:100%; min-height:100vh;
+    display:none;
+    align-items:center; justify-content:center;
+    flex-direction:column;
+    padding:6vh 6vw;
+    text-align:center;
+    animation:fadeIn .9s var(--ease);
+  }
+  .scene.active{ display:flex; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .eyebrow{
+    font-family:var(--sans);
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold-soft);
+    margin-bottom:18px;
+  }
+
+  h1,h2,h3{ font-family:var(--serif); font-weight:600; margin:0; }
+
+  /* motitas doradas ambientales */
+  .motas{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .mota{
+    position:absolute; bottom:-10px;
+    width:5px; height:5px; border-radius:50%;
+    background:var(--gold-soft); opacity:.35;
+    animation:flotar linear infinite;
+  }
+  @keyframes flotar{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:.5; }
+    90%{ opacity:.4; }
+    100%{ transform:translateY(-110vh) translateX(20px); opacity:0; }
+  }
+
+  button{ font-family:var(--sans); cursor:pointer; }
+
+  /* =========================================================
+     ESCENA 1 — ANUNCIO
+  ========================================================= */
+  #scene-ad{ background:#111; color:#eee; }
+  .ad-box{
+    max-width:420px; width:100%;
+    background:linear-gradient(160deg,#f2c94c,#f2994a);
+    color:#3a2400;
+    border-radius:14px;
+    padding:34px 26px;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+    position:relative;
+    font-family:var(--sans);
+  }
+  .ad-tag{
+    position:absolute; top:12px; left:12px;
+    font-size:10px; letter-spacing:.12em;
+    background:rgba(0,0,0,.15); padding:3px 8px; border-radius:4px;
+    text-transform:uppercase;
+  }
+  .ad-title{ font-family:var(--sans); font-weight:600; font-size:22px; margin:22px 0 8px; }
+  .ad-sub{ font-size:14px; opacity:.85; margin-bottom:22px; line-height:1.5; }
+  .ad-cta{
+    display:inline-block; background:#3a2400; color:#fff2d6;
+    border:none; padding:12px 26px; border-radius:8px;
+    font-weight:500; font-size:14px;
+  }
+  .ad-skip{
+    margin-top:26px; font-size:13px; color:#999;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  #skip-btn{
+    background:none; border:1px solid #555; color:#999;
+    padding:6px 14px; border-radius:20px; font-size:13px;
+    transition:all .3s var(--ease);
+  }
+  #skip-btn.ready{ color:#111; background:#eee; border-color:#eee; }
+  #skip-btn:disabled{ cursor:default; }
+
+  .ad-fade-text{
+    margin-top:40px; font-family:var(--serif); font-style:italic;
+    font-size:19px; color:var(--gold-soft); opacity:0;
+    transition:opacity 1.2s var(--ease);
+    max-width:340px;
+  }
+  .ad-fade-text.show{ opacity:1; }
+
+  /* =========================================================
+     ESCENA 2 — ENTRADA
+  ========================================================= */
+  .frame{
+    max-width:480px; width:100%;
+    border:1px solid rgba(201,164,107,.35);
+    border-radius:18px;
+    padding:56px 34px;
+    background:rgba(255,255,255,.02);
+    backdrop-filter:blur(2px);
+    position:relative; z-index:1;
+  }
+  #scene-enter h1{ font-size:clamp(30px,6vw,42px); color:var(--cream); }
+  #scene-enter p{ color:var(--cream-dim); font-size:15px; margin:18px 0 34px; line-height:1.7; }
+
+  .btn-main{
+    background:var(--gold);
+    color:#2A1220;
+    border:none;
+    padding:15px 40px;
+    border-radius:30px;
+    font-size:15px; letter-spacing:.06em;
+    font-weight:500;
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+    box-shadow:0 8px 24px rgba(201,164,107,.25);
+  }
+  .btn-main:hover{ transform:translateY(-2px); box-shadow:0 12px 30px rgba(201,164,107,.4); }
+  .btn-main:active{ transform:translateY(0); }
+
+  .btn-ghost{
+    background:transparent; color:var(--cream-dim);
+    border:1px solid rgba(247,236,228,.25);
+    padding:12px 28px; border-radius:30px; font-size:14px;
+    transition:all .25s var(--ease);
+  }
+  .btn-ghost:hover{ border-color:var(--gold-soft); color:var(--gold-soft); }
+
+  /* =========================================================
+     ESCENA 3 — MENU DE 3 OPCIONES
+  ========================================================= */
+  #scene-menu{ max-width:900px; margin:0 auto; }
+  #scene-menu .eyebrow{ margin-bottom:8px; }
+  #scene-menu h2{ font-size:clamp(26px,5vw,36px); margin-bottom:44px; color:var(--cream); }
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+    width:100%;
+    position:relative; z-index:1;
+  }
+  @media (max-width:720px){ .cards{ grid-template-columns:1fr; } }
+
+  .card{
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(247,236,228,.12);
+    border-radius:16px;
+    padding:30px 22px;
+    display:flex; flex-direction:column; align-items:center;
+    gap:14px;
+    cursor:pointer;
+    transition:transform .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
+    min-height:190px;
+    justify-content:center;
+  }
+  .card:hover{ transform:translateY(-6px); border-color:var(--gold); background:rgba(255,255,255,.06); }
+  .card.locked{ cursor:not-allowed; opacity:.55; }
+  .card.locked:hover{ transform:none; border-color:rgba(247,236,228,.12); background:rgba(255,255,255,.035); }
+
+  .card-icon{ font-size:30px; }
+  .card h3{ font-size:20px; color:var(--cream); font-weight:500; font-family:var(--serif); }
+  .card-hint{ font-size:12px; color:var(--cream-dim); letter-spacing:.03em; }
+  .card.done{ border-color:rgba(232,169,188,.5); }
+  .card.done .card-hint{ color:var(--blush); }
+
+  /* sello para la opcion bloqueada */
+  .seal{
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(160deg, var(--gold-soft), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px; color:#3a2400;
+    transition:transform .5s var(--ease);
+  }
+  .card.unlocked .seal{ transform:rotate(25deg) scale(1.05); }
+
+  /* =========================================================
+     PANEL / OVERLAY DE CONTENIDO
+  ========================================================= */
+  .overlay{
+    position:fixed; inset:0; z-index:20;
+    background:rgba(16,7,12,.88);
+    backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center;
+    padding:6vh 5vw;
+    animation:fadeIn .4s var(--ease);
+  }
+  .overlay.active{ display:flex; }
+
+  .panel{
+    max-width:560px; width:100%;
+    max-height:82vh; overflow-y:auto;
+    background:linear-gradient(180deg, var(--bg-wine-2), var(--bg-wine));
+    border:1px solid rgba(201,164,107,.3);
+    border-radius:18px;
+    padding:40px 32px;
+    text-align:left;
+    position:relative;
+  }
+  .panel::-webkit-scrollbar{ width:6px; }
+  .panel::-webkit-scrollbar-thumb{ background:rgba(201,164,107,.4); border-radius:3px; }
+
+  .panel h3{ font-size:26px; color:var(--cream); margin-bottom:18px; text-align:center; }
+  .panel p, .panel li{ font-size:15.5px; line-height:1.8; color:var(--cream-dim); }
+  .panel .close-x{
+    position:absolute; top:16px; right:18px;
+    background:none; border:none; color:var(--cream-dim);
+    font-size:20px; line-height:1;
+  }
+  .panel .close-x:hover{ color:var(--gold-soft); }
+
+  .momento-item{
+    border-left:2px solid var(--gold);
+    padding:4px 0 4px 16px;
+    margin-bottom:16px;
+  }
+  .momento-item .fecha{
+    display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold-soft); margin-bottom:4px;
+  }
+
+  /* --- cuadritos de fotos en pares --- */
+  .momento-foto{
+    margin-bottom:30px;
+  }
+  .momento-foto .par-imgs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid rgba(201,164,107,.25);
+  }
+  .momento-foto .par-imgs img{
+    width:100%; height:170px; object-fit:cover;
+    display:block;
+    background:rgba(255,255,255,.04);
+  }
+  .momento-foto .caption{
+    margin-top:10px;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:16px;
+    color:var(--blush-soft);
+    text-align:center;
+  }
+
+  .panel-actions{ margin-top:28px; text-align:center; }
+
+  .declaracion-text p{ font-family:var(--serif); font-size:19px; color:var(--cream); line-height:1.85; }
+  .declaracion-text p:first-child{ margin-top:0; }
+
+  .edit-note{
+    margin-top:22px; padding:12px 14px; border-radius:10px;
+    background:rgba(232,169,188,.08); border:1px dashed rgba(232,169,188,.4);
+    font-size:12.5px; color:var(--blush-soft); text-align:left; line-height:1.6;
+  }
+
+  /* =========================================================
+     ESCENA 4 — AGRADECIMIENTO
+  ========================================================= */
+  #scene-thanks h1{ font-size:clamp(30px,6vw,44px); color:var(--cream); margin-bottom:14px; }
+  #scene-thanks p{ color:var(--cream-dim); font-size:16px; line-height:1.8; max-width:440px; margin:0 auto 30px; }
+  .chat-hint{
+    display:inline-flex; align-items:center; gap:10px;
+    background:rgba(201,164,107,.1); border:1px solid rgba(201,164,107,.35);
+    padding:14px 22px; border-radius:14px; font-size:14px; color:var(--gold-soft);
+    margin-bottom:10px;
+  }
+
+  .footer-note{ margin-top:40px; font-size:11.5px; color:rgba(217,198,190,.4); }
+</style>
+</head>
+<body>
+
+<div class="motas" id="motas"></div>
+
+<div id="app">
+
+  <!-- ============================================================
+       ESCENA 1 — "ANUNCIO" (disfraz para que no se sepa qué es esto)
+  ============================================================= -->
+  <section class="scene active" id="scene-ad">
+    <div class="ad-box" id="ad-box">
+      <span class="ad-tag">Anuncio</span>
+      <div class="ad-title">¡Llévate la Súper Fregona 3000!</div>
+      <div class="ad-sub">Limpia hasta el doble de rápido. Resistente, ligera y con mango ergonómico. Oferta por tiempo limitado.</div>
+      <button class="ad-cta" type="button">Comprar ahora</button>
+      <div class="ad-skip">
+        <button id="skip-btn" disabled>Saltar anuncio (5)</button>
+      </div>
+      <div class="ad-fade-text" id="ad-fade-text">Bueno... en realidad esto no era un anuncio.</div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ESCENA 2 — BOTÓN DE ENTRAR
+  ============================================================= -->
+  <section class="scene" id="scene-enter">
+    <div class="frame">
+      <div class="eyebrow">Para Vanessa</div>
+      <h1>Hay algo que quiero mostrarte.</h1>
+      <p>No es un anuncio, ni una casualidad. Tómate un momento antes de seguir.</p>
+      <button class="btn-main" id="btn-entrar">Entrar</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ESCENA 3 — TRES OPCIONES
+  ============================================================= -->
+  <section class="scene" id="scene-menu">
+    <div class="eyebrow">Elige por dónde empezar</div>
+    <h2>Esto es lo que te preparé</h2>
+
+    <div class="cards">
+      <div class="card" id="card-momentos" onclick="abrirPanel('momentos')">
+        <div class="card-icon">✧</div>
+        <h3>Momentos vividos</h3>
+        <div class="card-hint">Ábrelo primero</div>
+      </div>
+
+      <div class="card locked" id="card-bebe" onclick="abrirPanel('bebe')">
+        <div class="seal">✕</div>
+        <h3>Una bebita</h3>
+        <div class="card-hint" id="bebe-hint">No se abre si no está abierto "Momentos vividos"</div>
+      </div>
+
+      <div class="card locked" id="card-declaracion" onclick="abrirPanel('declaracion')">
+        <div class="seal">✕</div>
+        <h3>La Declaración</h3>
+        <div class="card-hint" id="declaracion-hint">No se abre si no se abrió "Una bebita"</div>
+      </div>
+    </div>
+
+    <button class="btn-main" id="btn-continuar-final" style="display:none;margin-top:44px;" onclick="irA('scene-thanks')">Continuar</button>
+  </section>
+
+  <!-- ============================================================
+       ESCENA 4 — AGRADECIMIENTO
+  ============================================================= -->
+  <section class="scene" id="scene-thanks">
+    <div class="eyebrow">Gracias por llegar hasta aquí</div>
+    <h1>Eso era todo lo que quería decirte.</h1>
+    <p>Ahora la palabra es tuya. No hace falta que respondas aquí: cuéntame qué sientes por el chat, con calma, cuando quieras.</p>
+    <div class="chat-hint">Espero tu respuesta por el chat 💌</div>
+    <div>
+      <button class="btn-ghost" onclick="irA('scene-menu')">Volver al inicio</button>
+    </div>
+    <div class="footer-note">Hecho con paciencia y cariño para ti, Vanessa.</div>
+  </section>
+
+</div>
+
+<!-- ============================================================
+     OVERLAY / PANEL DE CONTENIDO (Momentos, Bebita, Declaración)
+============================================================= -->
+<div class="overlay" id="overlay" onclick="cerrarPanelFuera(event)">
+  <div class="panel" id="panel">
+    <button class="close-x" onclick="cerrarPanel()">✕</button>
+    <div id="panel-content"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONTENIDO EDITABLE
+   -----------------------------------------------------------
+   Edita libremente los textos de aquí abajo. No necesitas
+   tocar nada más del código para cambiar lo que dice cada
+   sección.
+========================================================= */
+
+// ---- 1) MOMENTOS VIVIDOS -----------------------------------
+// Cada "cuadrito" muestra DOS fotos juntas (lado a lado) con un
+// texto debajo. Agrega, quita o cambia los objetos de esta lista
+// como quieras — cada uno es un cuadrito nuevo.
+// "imagenes" debe tener exactamente 2 rutas (carpeta imagenes/).
+const MOMENTOS = [
+  {
+    imagenes: ["imagenes/momento1-a.jpg", "imagenes/momento1-b.jpg"],
+    texto: "La primera vez que hablamos"
+  },
+  {
+    imagenes: ["imagenes/momento2-a.jpg", "imagenes/momento2-b.jpg"],
+    texto: "El día que te pedí que fueras mi novia"
+  },
+  {
+    imagenes: ["imagenes/momento3-a.png", "imagenes/momento3-b.jpg"],
+    texto: "Cada \"te amo\" que me hacía alterar el corazón"
+  },
+  {
+    imagenes: ["imagenes/momento4-a.png", "imagenes/momento4-b.jpg"],
+    texto: "La playlist donde me dijiste que estabas embarazada"
+  },
+];
+
+// ---- 2) UNA BEBITA -------------------------------------------
+const BEBE_TITULO = "Una bebita";
+const BEBE_TEXTO = `
+  <img src="imagenes/bebe-1.jpg" style="width:100%;border-radius:12px;margin-bottom:10px">
+  <p class="caption" style="margin-bottom:20px;">Nuestra pequeña, ya tan real</p>
+
+  <img src="imagenes/bebe-playlist.png" style="width:100%;border-radius:12px;margin-bottom:10px">
+  <p class="caption">La playlist con la que me dijiste que venía en camino nuestra bebita</p>
+`;
+
+// ---- 3) LA DECLARACIÓN ---------------------------------------
+// Escribe aquí tu declaración final cuando la tengas lista.
+// Cada línea entre <p> y </p> aparece como un párrafo separado.
+const DECLARACION_HTML = `
+  <p>Vanessa, hay tantas cosas que quiero decirte que no sabía por dónde empezar, así que decidí armarte todo esto para que lo sintieras antes de leerlo.</p>
+
+  <p>Cada momento que revisaste hace un rato es real: la primera vez que hablamos, el día que te pedí ser mi novia, y cada "te amo" que tú me dijiste, que ahora significan más que nunca porque tenemos a nuestra linda bebita de un mes.</p>
+
+  <p>Sé que no todo fue perfecto. Hubo pequeños problemas que nos hicieron tomar un tiempo, y lo entiendo. Pero estoy dispuesto a solucionar lo que haga falta, con tal de que estés tranquila, cómoda y segura a mi lado.</p>
+
+  <p>Por eso quiero preguntarte, de nuevo y con toda la seguridad del mundo: ¿quieres volver a ser mi novia?</p>
+
+  <p>Y quiero ir un paso más allá, porque ya no quiero solo el presente contigo, quiero el resto de mi vida: Vanessa, ¿te casarías conmigo?</p>
+`;
+
+/* =========================================================
+   NO ES NECESARIO EDITAR NADA DE AQUÍ HACIA ABAJO
+========================================================= */
+
+// --- Motitas decorativas ---
+(function crearMotas(){
+  const cont = document.getElementById('motas');
+  for(let i=0;i<22;i++){
+    const m = document.createElement('div');
+    m.className='mota';
+    m.style.left = Math.random()*100+'vw';
+    m.style.animationDuration = (10+Math.random()*14)+'s';
+    m.style.animationDelay = (Math.random()*14)+'s';
+    m.style.width = m.style.height = (3+Math.random()*4)+'px';
+    cont.appendChild(m);
+  }
+})();
+
+// --- Navegación entre escenas ---
+function irA(id){
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+// --- Escena 1: anuncio con cuenta regresiva ---
+let seg = 5;
+const skipBtn = document.getElementById('skip-btn');
+const timer = setInterval(()=>{
+  seg--;
+  if(seg>0){
+    skipBtn.textContent = `Saltar anuncio (${seg})`;
+  } else {
+    clearInterval(timer);
+    skipBtn.textContent = 'Continuar';
+    skipBtn.disabled = false;
+    skipBtn.classList.add('ready');
+    document.getElementById('ad-fade-text').classList.add('show');
+  }
+},1000);
+
+skipBtn.addEventListener('click', ()=>{
+  if(skipBtn.disabled) return;
+  localStorage.setItem('vd_anuncio_visto','1');
+  irA('scene-enter');
+});
+
+// --- Escena 2: entrar ---
+document.getElementById('btn-entrar').addEventListener('click', ()=>{
+  localStorage.setItem('vd_entro','1');
+  irA('scene-menu');
+  actualizarTarjetas();
+});
+
+// --- Estado de progreso ---
+function estado(){
+  return {
+    momentos: localStorage.getItem('vd_momentos_visto')==='1',
+    bebe: localStorage.getItem('vd_bebe_visto')==='1',
+  };
+}
+
+function actualizarTarjetas(){
+  const e = estado();
+  const cardM = document.getElementById('card-momentos');
+  const cardB = document.getElementById('card-bebe');
+  const cardD = document.getElementById('card-declaracion');
+  const hintB = document.getElementById('bebe-hint');
+  const hintD = document.getElementById('declaracion-hint');
+
+  if(e.momentos) cardM.classList.add('done');
+  if(e.bebe) cardB.classList.add('done');
+
+  if(e.momentos){
+    cardB.classList.remove('locked');
+    cardB.classList.add('unlocked');
+    hintB.textContent = e.bebe ? 'Toca para volver a verla' : 'Toca para ver';
+    cardB.querySelector('.seal').textContent = e.bebe ? '✓' : '☆';
+  } else {
+    cardB.classList.add('locked');
+    cardB.classList.remove('unlocked');
+    hintB.textContent = 'No se abre si no está abierto "Momentos vividos"';
+    cardB.querySelector('.seal').textContent = '✕';
+  }
+
+  if(e.momentos && e.bebe){
+    cardD.classList.remove('locked');
+    cardD.classList.add('unlocked');
+    hintD.textContent = 'Toca para leerla';
+    cardD.querySelector('.seal').textContent = '✓';
+  } else {
+    cardD.classList.add('locked');
+    cardD.classList.remove('unlocked');
+    hintD.textContent = 'No se abre si no se abrió "Una bebita"';
+    cardD.querySelector('.seal').textContent = '✕';
+  }
+}
+
+// --- Construcción del contenido de cada panel ---
+function contenidoMomentos(){
+  const items = MOMENTOS.map(m => `
+    <div class="momento-foto">
+      <div class="par-imgs">
+        <img src="${m.imagenes[0]}" alt="">
+        <img src="${m.imagenes[1]}" alt="">
+      </div>
+      <p class="caption">${m.texto}</p>
+    </div>
+  `).join('');
+  return `
+    <h3>Momentos vividos</h3>
+    ${items}
+  `;
+}
+
+function contenidoBebe(){
+  return `
+    <h3>${BEBE_TITULO}</h3>
+    ${BEBE_TEXTO}
+  `;
+}
+
+function contenidoDeclaracion(){
+  return `
+    <h3>La Declaración</h3>
+    <div class="declaracion-text">${DECLARACION_HTML}</div>
+  `;
+}
+
+const ANUNCIOS_SORPRESA = [
+  {
+    titulo: "¡Nueva Súper Fregona 4000!",
+    texto: "Ahora con doble de brillo y mango extra ergonómico. Oferta por tiempo limitado."
+  },
+  {
+    titulo: "Crema Milagrosa AntiTodo™",
+    texto: "Quita manchas, arrugas y hasta el mal humor. Resultados no garantizados."
+  },
+  {
+    titulo: "Colchón NubePlus 3000",
+    texto: "Duerme como si nada en el mundo importara. Envío gratis a todo el país."
+  },
+  {
+    titulo: "Curso Exprés: 'Sé Millonario Ya'",
+    texto: "12 videos, 0 resultados reales, 100% de tu tiempo perdido."
+  },
+];
+
+function contenidoAnuncioSorpresa(){
+  const a = ANUNCIOS_SORPRESA[Math.floor(Math.random()*ANUNCIOS_SORPRESA.length)];
+  return `
+    <div style="text-align:center;">
+      <div style="display:inline-block;background:linear-gradient(160deg,#f2c94c,#f2994a);color:#3a2400;border-radius:14px;padding:26px 22px;max-width:300px;text-align:left;">
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:10px;">Anuncio</div>
+        <div style="font-family:var(--sans);font-weight:600;font-size:18px;margin-bottom:8px;">${a.titulo}</div>
+        <div style="font-size:13px;opacity:.85;">${a.texto}</div>
+      </div>
+      <p style="margin-top:26px;color:var(--cream-dim);font-size:14.5px;">jaja todavía no 😌 sigue el orden: primero "Momentos vividos", luego "Una bebita".</p>
+    </div>
+  `;
+}
+
+// --- Abrir / cerrar panel ---
+function abrirPanel(tipo){
+  const e = estado();
+  const bloqueadoBebe = (tipo==='bebe' && !e.momentos);
+  const bloqueadoDeclaracion = (tipo==='declaracion' && !(e.momentos && e.bebe));
+
+  if(bloqueadoBebe || bloqueadoDeclaracion){
+    document.getElementById('panel-content').innerHTML = contenidoAnuncioSorpresa();
+    document.getElementById('overlay').classList.add('active');
+    return;
+  }
+
+  const contenedor = document.getElementById('panel-content');
+  if(tipo==='momentos'){
+    contenedor.innerHTML = contenidoMomentos();
+    localStorage.setItem('vd_momentos_visto','1');
+  } else if(tipo==='bebe'){
+    contenedor.innerHTML = contenidoBebe();
+    localStorage.setItem('vd_bebe_visto','1');
+  } else if(tipo==='declaracion'){
+    contenedor.innerHTML = contenidoDeclaracion();
+    localStorage.setItem('vd_declaracion_leida','1');
+  }
+
+  document.getElementById('overlay').classList.add('active');
+  actualizarTarjetas();
+}
+
+function cerrarPanel(){
+  document.getElementById('overlay').classList.remove('active');
+  actualizarTarjetas();
+  if(localStorage.getItem('vd_declaracion_leida')==='1'){
+    document.getElementById('btn-continuar-final').style.display = 'inline-block';
+  }
+}
+
+function cerrarPanelFuera(e){
+  if(e.target.id === 'overlay') cerrarPanel();
+}
+
+// --- Recuperar progreso si vuelve a entrar (opcional) ---
+window.addEventListener('load', ()=>{
+  actualizarTarjetas();
+  if(localStorage.getItem('vd_declaracion_leida')==='1'){
+    document.getElementById('btn-continuar-final').style.display = 'inline-block';
+  }
+});
+</script>
+
+</body>
+</html>
