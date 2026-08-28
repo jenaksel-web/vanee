@@ -72,7 +72,7 @@
     color:var(--gold-soft);
     margin-bottom:18px;
   }
-
+ 
   h1,h2,h3{ font-family:var(--serif); font-weight:600; margin:0; }
  
   /* motitas doradas ambientales */
@@ -319,11 +319,26 @@
   }
  
   .footer-note{ margin-top:40px; font-size:11.5px; color:rgba(217,198,190,.4); }
+ 
+  #mute-toggle{
+    position:fixed; top:16px; right:16px; z-index:50;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(247,236,228,.2);
+    color:var(--cream);
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .25s var(--ease);
+  }
+  #mute-toggle:hover{ background:rgba(255,255,255,.16); }
 </style>
 </head>
 <body>
  
 <div class="motas" id="motas"></div>
+ 
+<audio id="bg-music" src="audio/cancion.mp3" loop preload="auto"></audio>
+<button id="mute-toggle" onclick="toggleMute()" title="Silenciar / activar música">🔊</button>
  
 <div id="app">
  
@@ -510,15 +525,34 @@ const timer = setInterval(()=>{
   }
 },1000);
  
+// --- Música de fondo ---
+const bgMusic = document.getElementById('bg-music');
+const muteBtn = document.getElementById('mute-toggle');
+let musicaIniciada = false;
+ 
+function iniciarMusica(){
+  if(musicaIniciada) return;
+  musicaIniciada = true;
+  bgMusic.volume = 0.55;
+  bgMusic.play().catch(()=>{});
+}
+ 
+function toggleMute(){
+  bgMusic.muted = !bgMusic.muted;
+  muteBtn.textContent = bgMusic.muted ? '🔇' : '🔊';
+}
+ 
 skipBtn.addEventListener('click', ()=>{
   if(skipBtn.disabled) return;
   localStorage.setItem('vd_anuncio_visto','1');
+  iniciarMusica();
   irA('scene-enter');
 });
  
 // --- Escena 2: entrar ---
 document.getElementById('btn-entrar').addEventListener('click', ()=>{
   localStorage.setItem('vd_entro','1');
+  iniciarMusica();
   irA('scene-menu');
   actualizarTarjetas();
 });
