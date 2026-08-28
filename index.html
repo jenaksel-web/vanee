@@ -330,20 +330,18 @@
  
   .declaracion-text p{ font-family:var(--serif); font-size:19px; color:var(--cream); line-height:1.85; }
   .declaracion-text p:first-child{ margin-top:0; }
-  .declaracion-text{ position:relative; }
   .anillo-img{
-    position:absolute;
-    top:-14px; right:-10px;
-    width:90px; height:90px;
+    display:block;
+    width:130px; height:130px;
     object-fit:cover;
-    border-radius:8px;
+    border-radius:10px;
     border:4px solid var(--cream);
     box-shadow:0 8px 18px rgba(0,0,0,.45);
-    transform:rotate(8deg);
-    z-index:2;
+    transform:rotate(4deg);
+    margin:26px auto 0;
   }
   @media (max-width:480px){
-    .anillo-img{ width:64px; height:64px; top:-10px; right:-6px; }
+    .anillo-img{ width:96px; height:96px; }
   }
  
   .edit-note{
@@ -494,16 +492,6 @@ const MOMENTOS = [
     imagenes: ["imagenes/momento1-a.jpg", "imagenes/momento1-b.jpg"],
     texto: `17 de marzo, aquella mañana donde simplemente pensé que sería una amistad más o simplemente que quedaría en un hola, como estas, que haces y quedaba ahí, pero no, nunca imaginé que ese día, estaba conociendo a quien sería madre de mi hija, la persona que más amo, que admiro, que deseo, que me enamora cada vez más sin darse cuenta. Al pasar los días de aquella conversación, te fui queriendo, siendo sincero, en ese momento no quería saber nada relacionado al amor, hasta que apareciste tú y me diste motivos para volver a creerlo. Sin darme cuenta, me estaba enamorando de ti, no quería hacerlo pero era inevitable, así que de a poco te iba diciendo que me gustabas, hasta que también comprendí que yo también te gustaba, así que me armé de valor y te hice ese pequeño video, confesando mis sentimientos por ti, lo cual fue correspondido: el mejor día de mi vida. Desde aquel momento me sentía el hombre más afortunado del mundo por tenerte a mi lado (aún me siento así, nada cambió). Amo cuando me dices "te amo", cuando me llamas por esos apodos "amorcito", "amor"; me encantan, simplemente quiero que me llames así siempre. Eres simplemente increíble y aún no sé qué hice para merecerte, pero de lo único que estoy seguro es que quiero ser aún mucho mejor para merecerte. Te amo muchísimo.`
   },
-  {
-    tipo: "texto",
-    imagenes: ["imagenes/momento2-a.jpg", "imagenes/momento2-b.jpg"],
-    texto: "El día que te pedí que fueras mi novia"
-  },
-  {
-    tipo: "texto",
-    imagenes: ["imagenes/momento3-a.png", "imagenes/momento3-b.jpg"],
-    texto: "Cada \"te amo\" que me hacía alterar el corazón"
-  },
 ];
  
 // ---- 2) UNA BEBITA -------------------------------------------
@@ -524,7 +512,6 @@ const BEBE_TEXTO = `
 // Escribe aquí tu declaración final cuando la tengas lista.
 // Cada línea entre <p> y </p> aparece como un párrafo separado.
 const DECLARACION_HTML = `
-  <img class="anillo-img" src="imagenes/anillo.jpg" alt="">
   <p>Vanessa, hay tantas cosas que quiero decirte que no sabía por dónde empezar, así que decidí armarte todo esto para que lo sintieras antes de leerlo.</p>
  
   <p>Cada momento que revisaste hace un rato es real: la primera vez que hablamos, el día que te pedí ser mi novia, y cada "te amo" que tú me dijiste, que ahora significan más que nunca porque tenemos a nuestra linda bebita de un mes.</p>
@@ -534,6 +521,8 @@ const DECLARACION_HTML = `
   <p>Por eso quiero preguntarte, de nuevo y con toda la seguridad del mundo: ¿quieres volver a ser mi novia?</p>
  
   <p>Y quiero ir un paso más allá, porque ya no quiero solo el presente contigo, quiero seguir construyendo el resto de mi vida a tu lado: Vanessa, ¿aceptarías unos anillos de promesa conmigo?</p>
+ 
+  <img class="anillo-img" src="imagenes/anillo.jpg" alt="">
 `;
  
 /* =========================================================
