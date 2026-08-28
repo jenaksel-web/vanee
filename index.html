@@ -259,11 +259,11 @@
   }
   .panel .close-x:hover{ color:var(--gold-soft); }
  
-  /* --- NUEVO: momento con fotos "estilo polaroid" en las esquinas --- */
+  /* --- momento con fotos "estilo polaroid" agrupadas en la esquina --- */
   .momento-item{
     position:relative;
     margin:0 0 46px 0;
-    padding:34px 24px 26px;
+    padding:78px 24px 26px;
     border-radius:14px;
     background:rgba(255,255,255,.03);
     border:1px solid rgba(201,164,107,.18);
@@ -285,25 +285,66 @@
     box-shadow:0 8px 18px rgba(0,0,0,.45);
     background:#000;
   }
-  .corner-photo.esquina-superior{
-    top:-16px; left:-12px;
-    transform:rotate(-9deg);
+  .fotos-grupo{
+    position:absolute;
+    top:-18px; left:-14px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
   }
-  .corner-photo.esquina-inferior{
-    bottom:-16px; right:-12px;
-    transform:rotate(7deg);
+  .fotos-grupo .fila-fotos{
+    display:flex;
+  }
+  .fotos-grupo .corner-photo{
+    position:relative;
+    top:auto; left:auto; right:auto; bottom:auto;
+  }
+  .fotos-grupo .corner-photo:first-child{
+    transform:rotate(-9deg);
+    z-index:2;
+  }
+  .fotos-grupo .corner-photo:last-child{
+    transform:rotate(7deg) translateX(-18px);
+    z-index:1;
+  }
+  .fotos-grupo .fecha-tag{
+    margin:2px 0 0 6px;
+    font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--bg-deep);
+    background:var(--gold-soft);
+    padding:3px 10px;
+    border-radius:20px;
+    transform:rotate(-3deg);
+    box-shadow:0 4px 10px rgba(0,0,0,.35);
+    z-index:3;
   }
   @media (max-width:480px){
     .corner-photo{ width:58px; height:58px; }
-    .corner-photo.esquina-superior{ top:-12px; left:-8px; }
-    .corner-photo.esquina-inferior{ bottom:-12px; right:-8px; }
-    .momento-item{ padding:28px 16px 20px; }
+    .fotos-grupo{ top:-14px; left:-10px; }
+    .fotos-grupo .corner-photo:last-child{ transform:rotate(7deg) translateX(-14px); }
+    .fotos-grupo .fecha-tag{ font-size:9.5px; padding:2px 8px; }
+    .momento-item{ padding:60px 16px 20px; }
   }
  
   .panel-actions{ margin-top:28px; text-align:center; }
  
   .declaracion-text p{ font-family:var(--serif); font-size:19px; color:var(--cream); line-height:1.85; }
   .declaracion-text p:first-child{ margin-top:0; }
+  .declaracion-text{ position:relative; }
+  .anillo-img{
+    position:absolute;
+    top:-14px; right:-10px;
+    width:90px; height:90px;
+    object-fit:cover;
+    border-radius:8px;
+    border:4px solid var(--cream);
+    box-shadow:0 8px 18px rgba(0,0,0,.45);
+    transform:rotate(8deg);
+    z-index:2;
+  }
+  @media (max-width:480px){
+    .anillo-img{ width:64px; height:64px; top:-10px; right:-6px; }
+  }
  
   .edit-note{
     margin-top:22px; padding:12px 14px; border-radius:10px;
@@ -442,16 +483,26 @@
  
 // ---- 1) MOMENTOS VIVIDOS -----------------------------------
 // Cada bloque es un "momento": tiene una fecha (opcional), un
-// texto largo, y hasta 2 fotos que se muestran como pequeñas
-// fotos tipo "polaroid" en la esquina superior izquierda y en
-// la esquina inferior derecha del bloque de texto.
-// Si solo tienes 1 foto para un momento, deja el segundo valor
-// del arreglo "imagenes" como null y esa esquina no se mostrará.
+// texto, y hasta 2 fotos que se muestran juntas como pequeñas
+// fotos tipo "polaroid" agrupadas en la esquina superior
+// izquierda del bloque, con la fecha (si la pusiste) como una
+// etiqueta dorada justo debajo de las fotos.
 const MOMENTOS = [
   {
+    tipo: "texto",
     fecha: "17 de marzo",
     imagenes: ["imagenes/momento1-a.jpg", "imagenes/momento1-b.jpg"],
     texto: `17 de marzo, aquella mañana donde simplemente pensé que sería una amistad más o simplemente que quedaría en un hola, como estas, que haces y quedaba ahí, pero no, nunca imaginé que ese día, estaba conociendo a quien sería madre de mi hija, la persona que más amo, que admiro, que deseo, que me enamora cada vez más sin darse cuenta. Al pasar los días de aquella conversación, te fui queriendo, siendo sincero, en ese momento no quería saber nada relacionado al amor, hasta que apareciste tú y me diste motivos para volver a creerlo. Sin darme cuenta, me estaba enamorando de ti, no quería hacerlo pero era inevitable, así que de a poco te iba diciendo que me gustabas, hasta que también comprendí que yo también te gustaba, así que me armé de valor y te hice ese pequeño video, confesando mis sentimientos por ti, lo cual fue correspondido: el mejor día de mi vida. Desde aquel momento me sentía el hombre más afortunado del mundo por tenerte a mi lado (aún me siento así, nada cambió). Amo cuando me dices "te amo", cuando me llamas por esos apodos "amorcito", "amor"; me encantan, simplemente quiero que me llames así siempre. Eres simplemente increíble y aún no sé qué hice para merecerte, pero de lo único que estoy seguro es que quiero ser aún mucho mejor para merecerte. Te amo muchísimo.`
+  },
+  {
+    tipo: "texto",
+    imagenes: ["imagenes/momento2-a.jpg", "imagenes/momento2-b.jpg"],
+    texto: "El día que te pedí que fueras mi novia"
+  },
+  {
+    tipo: "texto",
+    imagenes: ["imagenes/momento3-a.png", "imagenes/momento3-b.jpg"],
+    texto: "Cada \"te amo\" que me hacía alterar el corazón"
   },
 ];
  
@@ -473,6 +524,7 @@ const BEBE_TEXTO = `
 // Escribe aquí tu declaración final cuando la tengas lista.
 // Cada línea entre <p> y </p> aparece como un párrafo separado.
 const DECLARACION_HTML = `
+  <img class="anillo-img" src="imagenes/anillo.jpg" alt="">
   <p>Vanessa, hay tantas cosas que quiero decirte que no sabía por dónde empezar, así que decidí armarte todo esto para que lo sintieras antes de leerlo.</p>
  
   <p>Cada momento que revisaste hace un rato es real: la primera vez que hablamos, el día que te pedí ser mi novia, y cada "te amo" que tú me dijiste, que ahora significan más que nunca porque tenemos a nuestra linda bebita de un mes.</p>
@@ -604,17 +656,21 @@ function actualizarTarjetas(){
 // --- Construcción del contenido de cada panel ---
 function contenidoMomentos(){
   const items = MOMENTOS.map(m => {
-    const fotoSup = m.imagenes && m.imagenes[0]
-      ? `<img class="corner-photo esquina-superior" src="${m.imagenes[0]}" alt="">` : '';
-    const fotoInf = m.imagenes && m.imagenes[1]
-      ? `<img class="corner-photo esquina-inferior" src="${m.imagenes[1]}" alt="">` : '';
-    const fecha = m.fecha ? `<span class="fecha">${m.fecha}</span>` : '';
+    const tieneFotos = m.imagenes && (m.imagenes[0] || m.imagenes[1]);
+    const filaFotos = tieneFotos
+      ? `<div class="fila-fotos">
+          ${m.imagenes[0] ? `<img class="corner-photo" src="${m.imagenes[0]}" alt="">` : ''}
+          ${m.imagenes[1] ? `<img class="corner-photo" src="${m.imagenes[1]}" alt="">` : ''}
+        </div>` : '';
+    const fechaTag = m.fecha ? `<span class="fecha-tag">${m.fecha}</span>` : '';
+    const grupoEsquina = (tieneFotos || m.fecha)
+      ? `<div class="fotos-grupo">${filaFotos}${fechaTag}</div>` : '';
+    const fechaSola = (m.fecha && !tieneFotos) ? `<span class="fecha">${m.fecha}</span>` : '';
     return `
     <div class="momento-item">
-      ${fotoSup}
-      ${fecha}
+      ${tieneFotos ? grupoEsquina : ''}
+      ${fechaSola}
       <p class="momento-texto">${m.texto}</p>
-      ${fotoInf}
     </div>
   `;
   }).join('');
